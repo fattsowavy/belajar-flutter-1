@@ -55,6 +55,37 @@ class _TodoPageState extends State<TodoPage> {
     });
   }
 
+  void editTodo(int index){
+    TextEditingController editController = TextEditingController(text: todos[index].title);
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Edit Tugas"),
+          content: TextField(
+            controller: editController,
+            decoration: InputDecoration(hintText: "Masukkan Tugas Baru"),
+          ),
+          actions: [
+            TextButton(
+                child: Text("Batal"),
+                onPressed :() => Navigator.pop(context),
+            ),
+            TextButton(
+              onPressed: (){
+                if (editController.text.isNotEmpty) {
+                  setState(() {
+                    todos[index].title = editController.text;
+                  });
+                  Navigator.pop(context);
+                }
+              },
+              child: Text("Simpan"),
+            )
+          ],
+        )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -118,12 +149,21 @@ class _TodoPageState extends State<TodoPage> {
                                 ? TextDecoration.lineThrough
                                 : null,
                             color: todos[index].isDone ? Colors.grey : Colors.black,
-                          )
+                          ),
                         ),
-                        trailing: IconButton(
-                            onPressed: () => deleteTodo(index),
-                            icon: Icon(Icons.delete, color: Colors.red),
-                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              onPressed: () => editTodo(index),
+                              icon: Icon(Icons.edit, color: Colors.blue),
+                            ),
+                            IconButton(
+                              onPressed: () => deleteTodo(index),
+                              icon: Icon(Icons.delete, color: Colors.red),
+                            ),
+                          ],
+                        )
                       ),
                     );
                   }

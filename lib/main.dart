@@ -21,19 +21,38 @@ class TodoPage extends StatefulWidget {
   _TodoPageState createState() => _TodoPageState();
 }
 
+class Todo{
+  String title;
+  bool isDone;
+
+  Todo(this.title, {this.isDone = false});
+
+}
+
 class _TodoPageState extends State<TodoPage> {
 
-  List<String> todos = [];
-
+  List<Todo> todos = [];
   TextEditingController _controller = TextEditingController();
 
   void addTodo() {
     if (_controller.text.isNotEmpty) {
       setState(() {
-        todos.add(_controller.text);
+        todos.add(Todo(_controller.text));
         _controller.clear();
       });
     }
+  }
+
+  void deleteTodo(int index) {
+    setState(() {
+      todos.removeAt(index);
+    });
+  }
+
+  void toggleDone(int index) {
+    setState(() {
+      todos[index].isDone = !todos[index].isDone;
+    });
   }
 
   @override
@@ -42,6 +61,7 @@ class _TodoPageState extends State<TodoPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Daftar Tugas"),
+        centerTitle: true,
       ),
       body: Padding(
           padding: EdgeInsets.all(16.0),
@@ -54,21 +74,35 @@ class _TodoPageState extends State<TodoPage> {
                     controller: _controller,
                     decoration: InputDecoration(
                       hintText: 'Masukkan Tugas Baru',
-                      border: OutlineInputBorder(),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[200],
                     ),
                   ),
                 ),
-                SizedBox(width: 10,),
-                ElevatedButton(onPressed: addTodo, child: Text("Tambah"),)
+                SizedBox(width: 10),
+                ElevatedButton(
+                  onPressed: addTodo,
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  child: Text("Tambah", style: TextStyle(fontSize: 16)),
+                ),
               ],
             ),
             SizedBox(height: 20),
             Expanded(
+
                 child: ListView.builder(
                   itemCount: todos.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Text(todos[index]),
+                      title: Text(todos[index].title),
                     );
                   },
                 ), 

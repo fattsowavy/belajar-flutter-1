@@ -97,15 +97,37 @@ class _TodoPageState extends State<TodoPage> {
             ),
             SizedBox(height: 20),
             Expanded(
-
-                child: ListView.builder(
+              
+                child: todos.isEmpty
+                    ? Center(child: Text("Belum ada tugas", style: TextStyle(fontSize: 18, color: Colors.grey)))
+                    : ListView.builder(
                   itemCount: todos.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(todos[index].title),
+                  itemBuilder: (context, index){
+                    return Card (
+                      elevation: 2,
+                      margin: EdgeInsets.symmetric(vertical: 5),
+                      child: ListTile(
+                        leading: Checkbox(
+                            value: todos[index].isDone, 
+                            onChanged: (value) => toggleDone(index),
+                        ),
+                        title: Text(
+                          todos[index].title,
+                          style: TextStyle(
+                            decoration: todos[index].isDone
+                                ? TextDecoration.lineThrough
+                                : null,
+                            color: todos[index].isDone ? Colors.grey : Colors.black,
+                          )
+                        ),
+                        trailing: IconButton(
+                            onPressed: () => deleteTodo(index),
+                            icon: Icon(Icons.delete, color: Colors.red),
+                        ),
+                      ),
                     );
-                  },
-                ), 
+                  }
+                )
             ),
           ],
         ),
